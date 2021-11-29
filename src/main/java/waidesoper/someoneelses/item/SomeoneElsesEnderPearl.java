@@ -37,35 +37,39 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
-        if(world.isClient && user.isSneaking()){
-            HitResult target = MinecraftClient.getInstance().crosshairTarget;
-            SomeoneElses.LOGGER.info(target.getType().name());
-            if(target.getType()==HitResult.Type.ENTITY){
-                EntityHitResult entityHit = (EntityHitResult) target;
-                Entity entity = entityHit.getEntity();
-                if(entity instanceof PlayerEntity){
-                    setOwner(itemStack, (PlayerEntity) entity);
+        if(!world.isClient) {
+            if (user.isSneaking()) {
+                HitResult target = MinecraftClient.getInstance().crosshairTarget;
+                SomeoneElses.LOGGER.info(target.getType().name());
+                if(target.getType()==HitResult.Type.ENTITY){
+                    EntityHitResult entityHit = (EntityHitResult) target;
+                    Entity entity = entityHit.getEntity();
+                    if(entity instanceof PlayerEntity){
+                        setOwner(itemStack, (PlayerEntity) entity);
+                    }
+                    return TypedActionResult.success(itemStack,world.isClient());
                 }
-                return TypedActionResult.success(itemStack,world.isClient());
-            }
-        } else {
-            PlayerEntity owner = null;
-            if (itemStack.hasNbt())
-                owner = world.getPlayerByUuid(itemStack.getOrCreateNbt().getUuid("owner"));
-            if (owner != null) {
-                world.playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5f, 0.4f / (world.getRandom().nextFloat() * 0.4f + 0.8f));
-                user.getItemCooldownManager().set(this, 20);
-                if (!world.isClient) {
-                    EnderPearlEntity enderPearlEntity = new EnderPearlEntity(world, owner);
-                    enderPearlEntity.setItem(itemStack);
-                    enderPearlEntity.setProperties(user, user.getPitch(), user.getYaw(), 0.0f, 1.5f, 1.0f);
-                    world.spawnEntity(enderPearlEntity);
+            } else {
+                ServerPlayerEntity owner = null;
+                if (itemStack.hasNbt()) {
+                    owner = (ServerPlayerEntity) world.getPlayerByUuid(itemStack.getOrCreateNbt().getUuid("owner"));
                 }
-                user.incrementStat(Stats.USED.getOrCreateStat(this));
+                if (owner != null) {
+                    world.playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5f, 0.4f / (world.getRandom().nextFloat() * 0.4f + 0.8f));
+                    user.getItemCooldownManager().set(this, 20);
+                    if (!world.isClient) {
+                        SomeoneElses.LOGGER.info(owner.getDisplayName());
+                        EnderPearlEntity enderPearlEntity = new EnderPearlEntity(world, (ServerPlayerEntity) owner);
+                        enderPearlEntity.setItem(itemStack);
+                        enderPearlEntity.setProperties(user, user.getPitch(), user.getYaw(), 0.0f, 1.5f, 1.0f);
+                        world.spawnEntity(enderPearlEntity);
+                    }
+                    user.incrementStat(Stats.USED.getOrCreateStat(this));
                 if (!user.getAbilities().creativeMode) {
                     itemStack.decrement(1);
                 }
-                return TypedActionResult.success(itemStack, world.isClient());
+                    return TypedActionResult.success(itemStack, world.isClient());
+                }
             }
         }
         return TypedActionResult.fail(itemStack);
@@ -73,7 +77,6 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
 
     public void setOwner(ItemStack itemStack, PlayerEntity entity){
         itemStack.getOrCreateNbt().putUuid("owner", entity.getUuid());
-        SomeoneElses.LOGGER.info(itemStack.getNbt().getUuid("owner"));
     }
 
 }
