@@ -57,7 +57,7 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
                 if (itemStack.hasNbt()) {
                     owner = (ServerPlayerEntity) world.getPlayerByUuid(itemStack.getOrCreateNbt().getUuid("owner"));
                 }
-                if (owner != null) {
+                if (owner != null && !owner.isDisconnected()) {
                     world.playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5f, 0.4f / (world.getRandom().nextFloat() * 0.4f + 0.8f));
                     user.getItemCooldownManager().set(this, 20);
                     if (!world.isClient) {
@@ -87,15 +87,16 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
 
     @Override
     public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext){
-        if(itemStack.hasNbt()){
+        if (itemStack.hasNbt()) {
             tooltip.add(new TranslatableText("item.someone-elses.seepwithowner",
-                    world.getPlayerByUuid(itemStack.getOrCreateNbt().getUuid("owner")).getDisplayName()));
+                    itemStack.getOrCreateNbt().getString("ownerName")));
         } else {
             tooltip.add(new TranslatableText("item.someone-elses.seepnoowner"));
         }
     }
     public void setOwner(ItemStack itemStack, PlayerEntity entity){
         itemStack.getOrCreateNbt().putUuid("owner", entity.getUuid());
+        itemStack.getOrCreateNbt().putString("ownerName", entity.getDisplayName().asString());
     }
 
 }
