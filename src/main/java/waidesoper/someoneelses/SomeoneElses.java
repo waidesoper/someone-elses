@@ -25,19 +25,21 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import waidesoper.someoneelses.init.initItems;
 import waidesoper.someoneelses.item.SomeoneElsesEnderPearl;
 import waidesoper.someoneelses.networking.ModPacketsC2S;
+import waidesoper.someoneelses.networking.ModPacketsS2C;
 
 public class SomeoneElses implements ModInitializer {
     public static String MOD_ID = "someone-elses";
     public static Logger LOGGER = LogManager.getLogger();
-    public static final SomeoneElsesEnderPearl SEEP = new SomeoneElsesEnderPearl(new FabricItemSettings().group(ItemGroup.MISC).maxCount(16));
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID,"someoneelsesenderpearl"), SEEP);
+        initItems.register();
         ModPacketsC2S.register();
-        DispenserBlock.registerBehavior(SEEP,  new ProjectileDispenserBehavior(){
+        ModPacketsS2C.register();
+        DispenserBlock.registerBehavior(initItems.SEEP,  new ProjectileDispenserBehavior(){
 
             @Override
             protected ProjectileEntity createProjectile(World world, Position position, ItemStack stack) {
