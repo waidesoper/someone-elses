@@ -7,6 +7,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 public class ModPacketsS2C {
     public static void register(){
+
         ClientPlayNetworking.registerGlobalReceiver(ModPackets.SEEP_SET_OWNER,ModPacketsS2C::seepSetOwner);
         ClientPlayNetworking.registerGlobalReceiver(ModPackets.ENTITY_SPAWN_PACKET, ModPacketsS2C::receiveEntityPacket);
     }

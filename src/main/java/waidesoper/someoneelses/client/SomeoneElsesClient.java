@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class SomeoneElsesClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+
         ModPacketsS2C.register();
         EntityRendererRegistry.register(initEntities.SEDNACET, FlyingItemEntityRenderer::new);
 
