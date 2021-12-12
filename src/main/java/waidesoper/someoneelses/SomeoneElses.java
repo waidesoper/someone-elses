@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import waidesoper.someoneelses.item.SomeoneElsesEnderPearl;
 import waidesoper.someoneelses.networking.ModPacketsC2S;
+import waidesoper.someoneelses.networking.ModPacketsS2C;
 
 public class SomeoneElses implements ModInitializer {
     public static String MOD_ID = "someone-elses";
@@ -37,6 +38,7 @@ public class SomeoneElses implements ModInitializer {
     public void onInitialize() {
         Registry.register(Registry.ITEM, new Identifier(MOD_ID,"someoneelsesenderpearl"), SEEP);
         ModPacketsC2S.register();
+
         DispenserBlock.registerBehavior(SEEP,  new ProjectileDispenserBehavior(){
 
             @Override

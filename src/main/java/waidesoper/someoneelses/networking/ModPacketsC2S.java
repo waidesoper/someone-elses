@@ -39,7 +39,7 @@ public class ModPacketsC2S {
                         if (!world.isClient) {
                             EnderPearlEntity enderPearlEntity = new EnderPearlEntity(world, (ServerPlayerEntity) owner);
                             enderPearlEntity.setItem(itemStack);
-                            enderPearlEntity.setProperties(playerEntity, playerEntity.getPitch(), playerEntity.getYaw(), 0.0f, 1.5f, 1.0f);
+                            enderPearlEntity.setVelocity(playerEntity, playerEntity.getPitch(), playerEntity.getYaw(), 0.0f, 1.5f, 1.0f);
                             world.spawnEntity(enderPearlEntity);
                         }
                         world.playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.ENTITY_ENDER_PEARL_THROW, SoundCategory.NEUTRAL, 0.5f, 0.4f / (world.getRandom().nextFloat() * 0.4f + 0.8f));

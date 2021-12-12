@@ -45,19 +45,12 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         if (user.isSneaking()) {
-            HitResult target = MinecraftClient.getInstance().crosshairTarget;
-            if (target.getType() == HitResult.Type.ENTITY) {
-                EntityHitResult entityHit = (EntityHitResult) target;
-                Entity entity = entityHit.getEntity();
-                if (entity instanceof PlayerEntity) {
-                    setOwner(itemStack, (PlayerEntity) entity);
-                }
-                return TypedActionResult.success(itemStack, world.isClient);
-            } else if (target.getType() == HitResult.Type.MISS) {
-                setOwner(itemStack, user);
-                return TypedActionResult.success(itemStack, world.isClient);
+            if(!world.isClient) {
+                PacketByteBuf buffer = PacketByteBufs.create();
+                buffer.writeItemStack(itemStack);
+                ServerPlayNetworking.send((ServerPlayerEntity) user, ModPackets.SEEP_SET_OWNER, buffer);
             }
-            return TypedActionResult.fail(itemStack);
+            return TypedActionResult.success(itemStack, world.isClient());
         } else {
             PacketByteBuf buffer = PacketByteBufs.create();
             buffer.writeItemStack(itemStack);
@@ -68,10 +61,7 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
 
     @Override
     public boolean hasGlint(ItemStack itemStack){
-        if(itemStack.hasNbt()){
-            return itemStack.getNbt().getUuid("owner") != null;
-        }
-        return false;
+        return itemStack.hasNbt() && itemStack.getNbt().contains("owner");
     }
 
     @Override
@@ -83,18 +73,4 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
             tooltip.add(new TranslatableText("item.someone-elses.seepnoowner"));
         }
     }
-
-    public PlayerEntity getOwner(World world, ItemStack itemStack){
-        return world.getPlayerByUuid(itemStack.getOrCreateNbt().getUuid("owner"));
-    }
-    public void setOwner(ItemStack itemStack, PlayerEntity entity){
-        itemStack.getOrCreateNbt().putUuid("owner", entity.getUuid());
-        itemStack.getOrCreateNbt().putString("ownerName", entity.getDisplayName().asString());
-        PacketByteBuf buffer = PacketByteBufs.create();
-        buffer.writeUuid(entity.getUuid());
-        buffer.writeItemStack(itemStack);
-        buffer.writeString(entity.getDisplayName().asString());
-        ClientPlayNetworking.send(ModPackets.SEEP_SET_OWNER,buffer);
-    }
-
 }
