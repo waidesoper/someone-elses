@@ -8,6 +8,7 @@ import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -49,6 +50,10 @@ public class SomeoneElsesDNACollectorEntity extends ThrownItemEntity {
 
     protected void onCollision(HitResult hitResult){
         super.onCollision(hitResult);
+    }
+
+    protected void onBlockHit(BlockHitResult hitResult){
+        super.onBlockHit(hitResult);
         if(!this.world.isClient){
             this.kill();
             dropItem(initItems.SEDNAC);
