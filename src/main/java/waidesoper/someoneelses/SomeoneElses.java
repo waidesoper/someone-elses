@@ -25,6 +25,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import waidesoper.someoneelses.init.initEntities;
+
 import waidesoper.someoneelses.init.initItems;
 import waidesoper.someoneelses.item.SomeoneElsesEnderPearl;
 import waidesoper.someoneelses.networking.ModPacketsC2S;
@@ -34,11 +37,12 @@ public class SomeoneElses implements ModInitializer {
     public static String MOD_ID = "someone-elses";
     public static Logger LOGGER = LogManager.getLogger();
 
+
     @Override
     public void onInitialize() {
         initItems.register();
+        initEntities.register();
         ModPacketsC2S.register();
-        ModPacketsS2C.register();
         DispenserBlock.registerBehavior(initItems.SEEP,  new ProjectileDispenserBehavior(){
 
             @Override
