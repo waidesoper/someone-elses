@@ -42,9 +42,12 @@ public class SomeoneElsesEnderPearl extends EnderPearlItem {
             }
             return TypedActionResult.success(itemStack, world.isClient());
         } else {
-            PacketByteBuf buffer = PacketByteBufs.create();
-            buffer.writeItemStack(itemStack);
-            ClientPlayNetworking.send(ModPackets.SEEP_THROW,buffer);
+            if(world.isClient) {
+                PacketByteBuf buffer = PacketByteBufs.create();
+                buffer.writeItemStack(itemStack);
+                ClientPlayNetworking.send(ModPackets.SEEP_THROW, buffer);
+            }
+            itemStack.decrement(1);
             return TypedActionResult.success(itemStack, world.isClient());
         }
     }

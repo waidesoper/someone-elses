@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import waidesoper.someoneelses.entity.SomeoneElsesDNACollectorEntity;
 import waidesoper.someoneelses.init.initEntities;
 
 import waidesoper.someoneelses.init.initItems;
