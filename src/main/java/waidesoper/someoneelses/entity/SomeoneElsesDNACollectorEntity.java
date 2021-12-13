@@ -2,12 +2,14 @@ package waidesoper.someoneelses.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -45,7 +47,12 @@ public class SomeoneElsesDNACollectorEntity extends ThrownItemEntity {
             itemStack.getOrCreateNbt().putString("ownerName", playerEntity.getDisplayName().asString());
         }
         this.kill();
-        dropStack(itemStack);
+        if(this.getOwner() != null) {
+            ServerPlayerEntity user = (ServerPlayerEntity) this.getOwner();
+            user.giveItemStack(itemStack);
+        } else {
+            dropStack(itemStack);
+        }
     }
 
     protected void onCollision(HitResult hitResult){
